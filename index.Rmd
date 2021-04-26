@@ -13,4 +13,4 @@ knitr::opts_chunk$set(echo = TRUE)
 This website will house all projects related to NFL player evaluation research. Following the  links below to navigate the website:  
   
 * [Defensive Ends](defensive_ends.html)
-* Wide Receivers
+* [Wide Receivers](wide_receivers.html)
