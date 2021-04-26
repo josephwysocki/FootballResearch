@@ -6,6 +6,6 @@ title: ""
 ***  
 
 ### **Analysis** 
-The tool linked below provides player comps for all wide receivers available in the 2021 NFL draft. To ouse the tool, first select and NCAA team from the drop down menu. Then type in a player from that school who was recently drafted. The table will then populate with the most similar players in the 2021 NFL draft.  
+The tool linked below provides player comps for all wide receivers available in the 2021 NFL draft. To use the tool, first select and NCAA team from the drop down menu. Then type in a player from that school who was recently drafted. The table will then populate with the most similar players in the 2021 NFL draft.  
   
 * [Wide Receiver Comps](https://alexcstern.shinyapps.io/WR_Comparison/)
