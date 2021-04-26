@@ -2,26 +2,426 @@
 title: "defensive_ends"
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+![](images/draft_log2.jpg)  
+  
+# **Edge Rusher Analysis**
+***  
+
+### Introduction and Variables  
+The following analysis seeks to comparatively analyze the top 20 edge rushers available in the 2021 NFL draft. Both qualitative and quantitative variables were used to measure player value. The table below summarizes these metrics:  
+  
+* **PFF Overall**: Overall PFF Grade
+* **PFF Pass**: Pass Defense PFF Grade
+* **PFF Run**: Run Defense PFF Grade
+* **Stop Rate**: Stops per Snap Played
+* **Tackle Rate**: Tackles per Snap Played
+* **Assist Rate**: Assists per Snap Played
+* **Forced Fumble Rate**: Forced Fumbles per Snap Played
+* **Hit Rate**: QB Hits per Pass Play
+* **Hurry Rate**: QB Hurries per Pass Play
+* **Sack Rate**: Sacks per Pass Play
+
+### Method  
+PFF grades range from 60-100 and are presented largely unchanged throughout this analysis. The rate metrics were combined and blended to create two new metrics: Composite Pass and Composite Run. These two scores range from 0-100 and measure the overall production of each player relative to the entire player pool. Below are the components of each score:  
+  
+  * **Composite Pass**: Hit Rate, Hurry Rate, and Sack Rate
+  * **Composite Run**: Stop Rate, Tackle Rate, Assist Rate, and Forced Fumble Rate
+  
+  ***
+### Results  
+  
+**Player Values by Category**  
+The table below includes the PFF grades and composite score for the entirety of the player pool. The table can be sorted by column simply by clicking on the column title, and the search bar can be used to find specific players.  
+```{r, echo = FALSE, results='hide', message=FALSE, warning=FALSE}
+# Libraries
+library(tidyverse)
+
+# Get a list of draft eligible players
+player_set <- read_csv('data/draft_eligible_top20.csv')
+in_draft <- player_set$player
+
+# Read in the stats
+metrics_2016 <- read_csv('data/defense_summary_2016.csv')
+metrics_2017 <- read_csv('data/defense_summary_2017.csv')
+metrics_2018 <- read_csv('data/defense_summary_2018.csv')
+metrics_2019 <- read_csv('data/defense_summary_2019.csv')
+metrics_2020 <- read_csv('data/defense_summary_2020.csv')
+
+# Add year
+metrics_2016$year <- '2016'
+metrics_2017$year <- '2017'
+metrics_2018$year <- '2018'
+metrics_2019$year <- '2019'
+metrics_2020$year <- '2020'
+
+# Set the columns to keep
+clean_up_columns = c('player',
+                     'player_id',
+                     'position',
+                     'team_name',
+                     'year',               
+                     'player_game_count',
+                     'assists',
+                     'batted_passes',
+                     'forced_fumbles',
+                     'grades_defense',
+                     'grades_pass_rush_defense',
+                     'grades_run_defense',
+                     'grades_tackle',
+                     'hits',
+                     'hurries',
+                     'interceptions',
+                     'missed_tackles',
+                     'pass_break_ups',
+                     'sacks',
+                     'snap_counts_defense',
+                     'snap_counts_pass_rush',
+                     'snap_counts_run_defense',
+                     'stops',
+                     'tackles',
+                     'total_pressures')
+
+# Reduce the width of the data frames
+metrics_2016 <- metrics_2016[clean_up_columns]
+metrics_2017 <- metrics_2017[clean_up_columns]
+metrics_2018 <- metrics_2018[clean_up_columns]
+metrics_2019 <- metrics_2019[clean_up_columns]
+metrics_2020 <- metrics_2020[clean_up_columns]
+
+# Combine the data
+full_data <- rbind(metrics_2016,
+      metrics_2017,
+      metrics_2018,
+      metrics_2019,
+      metrics_2020)
+
+# Filter the data
+start_year <- 2016
+end_year <- 2020
+full_data <- full_data[ which(full_data$year >= start_year
+                         & full_data$year <= end_year), ]
+
+full_data[c(3)][which(full_data$player == "Jordan Smith"), ] <- "UAB"
+full_data[c(2)][which(full_data$player == "Jordan Smith"), ] <- 43427
+
+# Aggregate the data
+agg_data <- full_data %>%
+  group_by(player, player_id) %>%
+  summarise(games = sum(player_game_count), 
+            snaps_pass = sum(snap_counts_pass_rush),
+            snaps_run = sum(snap_counts_run_defense),
+            stops = sum(stops),
+            tackles = sum(tackles),
+            assists = sum(assists),
+            batted_passes = sum(batted_passes),
+            forced_fumbles = sum(forced_fumbles),
+            grade_tot = mean(grades_defense),
+            grade_pr = mean(grades_pass_rush_defense),
+            grade_rd = mean(grades_run_defense),
+            hits = sum(hits),
+            hurries = sum(hurries),
+            sacks = sum(sacks))
+
+# Filter to minimum games
+min_games <- 0
+agg_data <- agg_data[ which(agg_data$games >= min_games), ]
+
+# Add a total snaps column
+agg_data$snaps <- agg_data$snaps_pass + agg_data$snaps_run
+
+# Make a new df for rates
+rate_data <- agg_data
+
+# Adjust the columns and make them rate based
+rate_data$stop_rate = rate_data$stops / rate_data$snaps
+rate_data$tackle_rate = rate_data$tackles / rate_data$snaps
+rate_data$assist_rate = rate_data$assists / rate_data$snaps
+rate_data$batted_passes = rate_data$batted_passes / rate_data$snaps_pass
+rate_data$forced_fumbles = rate_data$forced_fumbles / rate_data$snaps
+rate_data$hit_rate = rate_data$hits / rate_data$snaps_pass
+rate_data$hurry_rate = rate_data$hurries / rate_data$snaps_pass
+rate_data$sack_rate = rate_data$sacks / rate_data$snaps_pass
+
+# Fix errors
+rate_data[is.na(rate_data)] <- 0
+
+# Isolate just the columns we want
+cols_to_drop <- c('stops',
+                  'tackles',
+                  'assists',
+                  'batted_passes',
+                  'forced_fumbles',
+                  'hits',
+                  'hurries',
+                  'sacks')
+
+rate_data <- rate_data[ , !(names(rate_data) %in% cols_to_drop)]
+
+# Limit to only the desired player set
+rate_data <- subset(rate_data, player %in% in_draft)
+
+# MinMax Scale
+# (x-min)/(max-min)
+scaled_data <- rate_data
+
+stop_max <- max(scaled_data$stop_rate)
+stop_min <- min(scaled_data$stop_rate)
+stop_range <- stop_max - stop_min
+scaled_data$stop_rate <- (scaled_data$stop_rate - stop_min) / stop_range
+
+tackle_max <- max(scaled_data$tackle_rate)
+tackle_min <- min(scaled_data$tackle_rate)
+tackle_range <- tackle_max - tackle_min
+scaled_data$tackle_rate <- (scaled_data$tackle_rate - tackle_min) / tackle_range
+
+assist_max <- max(scaled_data$assist_rate)
+assist_min <- min(scaled_data$assist_rate)
+assist_range <- assist_max - assist_min
+scaled_data$assist_rate <- (scaled_data$assist_rate - assist_min) / assist_range
+
+hit_max <- max(scaled_data$hit_rate)
+hit_min <- min(scaled_data$hit_rate)
+hit_range <- hit_max - hit_min
+scaled_data$hit_rate <- (scaled_data$hit_rate - hit_min) / hit_range
+
+hurry_max <- max(scaled_data$hurry_rate)
+hurry_min <- min(scaled_data$hurry_rate)
+hurry_range <- hurry_max - hurry_min
+scaled_data$hurry_rate <- (scaled_data$hurry_rate - hurry_min) / hurry_range
+
+sack_max <- max(scaled_data$sack_rate)
+sack_min <- min(scaled_data$sack_rate)
+sack_range <- sack_max - sack_min
+scaled_data$sack_rate <- (scaled_data$sack_rate - sack_min) / sack_range
+
+# Set final df
+final_data <- scaled_data
+final_data$pr_comp <- (final_data$hit_rate+final_data$hurry_rate+final_data$sack_rate)/3
+final_data$pr_comp <- final_data$pr_comp / max(final_data$pr_comp) * 100 
+final_data$rd_comp <- (final_data$stop_rate+final_data$tackle_rate+final_data$assist_rate)/3
+final_data$rd_comp <- final_data$rd_comp / max(final_data$rd_comp) * 100 
+reduced_cols <- c('player','games','grade_tot','grade_pr','grade_rd','pr_comp','rd_comp')
+final_data <- select(final_data, reduced_cols)
+final_data <- final_data[order(-final_data$grade_tot),]
+final_data[,-1] <- round(final_data[,-1],2)
+
 ```
 
-## R Markdown
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
+```{r echo=FALSE}
+library(knitr)
+library(reactable)
+BuYlRd <- function(x) rgb(colorRamp(c("#e6fff2", "#80ffbc"))(x), maxColorValue = 255)
+reactable(
+  final_data,
+  pagination = TRUE,
+  striped = TRUE,
+  highlight = TRUE,
+  wrap = FALSE,
+  searchable = TRUE,
+  style = list(fontFamily = "Work Sans, sans-serif", fontSize = "14px"),
+  columns = list(
+    player = colDef(name = "Player Name"),
+    games = colDef(name = "Games"),
+    grade_tot = colDef(name = "PFF Overall"),
+    grade_pr = colDef(name = "PFF Pass"),
+    grade_rd = colDef(name = "PFF Run"),
+    pr_comp = colDef(name = "Composite Pass", style = function(value){
+      normalized <- (value - min(final_data$pr_comp)) / (max(final_data$pr_comp) -   min(final_data$pr_comp))
+      color <- BuYlRd(normalized)
+      list(background = color)
+    }),
+    rd_comp = colDef(name = "Composite Run", style = function(value){
+      normalized <- (value - min(final_data$rd_comp)) / (max(final_data$rd_comp) -   min(final_data$rd_comp))
+      color <- BuYlRd(normalized)
+      list(background = color)
+    })
+  ))
 ```
+<br />
+<br />
+**Players by Pass Defense and Run Defense Scores**  
+**PFF and Composite Values**  
+The scatterplots below show the relative ranks of each player based on both PFF grades (purple) and composite scores (orange). Pass rush ability moves along the y-axis, while run defense moves along the x-axis. As we move up and to the right within each plot, we find players who are better at each skill.
 
-## Including Plots
+```{r, fig.align="center", echo=FALSE, message=FALSE, warning=FALSE}
+library(plotly)
+library(ggplot2)
+library(gridExtra)
 
-You can also embed plots, for example:
+# Get data for combined grades
+final_data$comp_avg <- (final_data$rd_comp + final_data$pr_comp) / 2
+final_data$pff_avg <- (final_data$grade_pr + final_data$grade_rd) / 2
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+p <- ggplot(final_data, aes(x = pr_comp, y= rd_comp, Player=player)) +
+  geom_point(color='#ffbc80') +
+  xlab("Comp Pass Grade") +
+  ylab("Comp Run Grade")
+
+p1 <- ggplotly(p,tooltip = c("Player"))
+
+p2 <- ggplot(final_data, aes(x = grade_pr, y= grade_rd, Player=player)) + 
+  geom_point(color='#bc80ff') +
+  xlab("PFF Pass Grade") +
+  ylab("PFF Run Grade")
+
+p3 <- ggplotly(p2,tooltip = c("Player"))
+
+p4 <- ggplot(final_data, aes(x = pff_avg, y= comp_avg, Player=player)) + 
+  geom_point(color='violetred4') +
+  xlab("PFF Grade") +
+  ylab("Composite Grade")
+
+p5 <- ggplotly(p4,tooltip = c("Player"))
+
+p6 <- subplot(p3, p1, titleX = TRUE, titleY = TRUE, margin = 0.04)
+p6 <- p6 %>% layout(autosize = F, width = 800, height = 500)
+
+ppc <- htmltools::div(p6, align="center" )
+p6
 ```
+<br />  
+**Player Score Comparisons**  
+**PFF versus Composite**  
+Our two categories – PFF Grades and Composite Scores – capture different items. PFF grades are subjective and more wholistic, while composite scores measure pure production agnostic to game situation. As such, a lot can be gained from analyzing how players score within each category. The chart below plots the two scores for each player, with the purple dot corresponding to the PFF Grade and the orange dot corresponding to the Composite Score. Players with large distances between the two points have a considerable difference in how they are valued by the two metrics.    
+  
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+```{r, fig.align="center", echo=FALSE, message=FALSE, warning=FALSE}
+library(ggplot2) 
+library(ggalt)   
+library(tidyverse)
+
+# Get data for combined grades
+db_data <- final_data
+db_data$comp_avg <- (db_data$rd_comp + db_data$pr_comp) / 2
+db_data$pff_avg <- (db_data$grade_pr + db_data$grade_rd) / 2
+
+db_data <- db_data %>%
+   group_by(player) %>%
+   summarise(comp_avg = mean(comp_avg), 
+             pff_avg = mean(pff_avg))
+
+db_data$comp_avg <- (db_data$comp_avg - min(db_data$comp_avg))/(max(db_data$comp_avg)-min(db_data$comp_avg)) * 100
+
+db_data$pff_avg <- (db_data$pff_avg - min(db_data$pff_avg))/(max(db_data$pff_avg)-min(db_data$pff_avg)) * 100
+
+db_data <- select(db_data, player, comp_avg, pff_avg)
+db_data$diff <- (db_data$comp_avg  - db_data$pff_avg)
+
+# Rename columns
+names(db_data)[names(db_data) == "player"] <- "Player"
+names(db_data)[names(db_data) == "comp_avg"] <- "Comp"
+names(db_data)[names(db_data) == "pff_avg"] <- "PFF"
+
+# Make plot
+db <- ggplot(db_data, aes(x=Comp, xend=PFF, y=Player)) + 
+        #create a thick line between x and xend instead of using defaut 
+        #provided by geom_dubbell
+        geom_segment(aes(x=Comp, 
+                         xend=PFF, 
+                         y=Player, 
+                         yend=Player), 
+                     color="#b2b2b2", size=1.5)+
+        geom_dumbbell(color="light blue", 
+                      size_x=3.5, 
+                      size_xend = 3.5,
+                      #Note: there is no US:'color' for UK:'colour' 
+                      # in geom_dumbbel unlike standard geoms in ggplot()
+                      colour_x="#ffbc80", 
+                      colour_xend = "#bc80ff") +
+        labs(x=NULL, y=NULL)
+
+db
+```
+  
+  
+**Player Radar Charts**  
+Now we will look to combine our metrics and see how each player compares to the entire pool. Below are radar charts for each player, where the shaded orange area represents the group average, and the purple lines represent the individuals score in five different categories: Total PFF Grade (TOT), Pass Rush PFF Grade (GP), Run Defense PFF Grade (GR), Pass Rush Composite Grade (CP) and Run Defense Composite Grade (CR). The closer to the edge, the better a player is for a given category.  
+<br />
+```{r, fig.align="center", echo=FALSE, message=FALSE, warning=FALSE}
+library(fmsb) 
+library(tibble)
+
+# RADARS
+radar_data <- final_data[ , -which(names(final_data) %in% c("games","comp_avg","pff_avg"))]
+
+# Scale PFF ratings
+radar_data$grade_tot <- (radar_data$grade_tot - min(radar_data$grade_tot))/(max(radar_data$grade_tot)-min(radar_data$grade_tot)) * 100
+
+radar_data$grade_pr <- (radar_data$grade_pr - min(radar_data$grade_pr))/(max(radar_data$grade_pr)-min(radar_data$grade_pr)) * 100
+
+radar_data$grade_rd <- (radar_data$grade_rd - min(radar_data$grade_rd))/(max(radar_data$grade_rd)-min(radar_data$grade_rd)) * 100
+
+radar_data <- column_to_rownames(radar_data, var = "player")
+
+# Define the variable ranges: maximum and minimum
+max_min <- data.frame(
+  grade_tot = c(100, 0, mean(radar_data$grade_tot)),
+  grade_pr = c(100, 0, mean(radar_data$grade_pr)),
+  grade_rd = c(100, 0, mean(radar_data$grade_rd)),
+  pr_comp = c(100, 0, mean(radar_data$pr_comp)),
+  rd_comp = c(100, 0, mean(radar_data$rd_comp))
+)
+
+rownames(max_min) <- c("Max", "Min", "Average")
+
+df <- rbind(max_min, radar_data)
+
+# Helper Function
+create_beautiful_radarchart <- function(data, color = "#00AFBB", 
+                                        vlabels = colnames(data), vlcex = 0.7,
+                                        caxislabels = NULL, title = NULL, ...){
+  radarchart(
+    data, axistype = 1,
+    # Customize the polygon
+    pcol = color, pfcol = scales::alpha(color, 0.5), plwd = 2, plty = 1,
+    # Customize the grid
+    cglcol = "grey", cglty = 1, cglwd = 0.8,
+    # Customize the axis
+    axislabcol = "grey", 
+    # Variable labels
+    vlcex = vlcex, vlabels = vlabels,
+    caxislabels = caxislabels, title = title, ...
+  )
+}
+
+
+# Edit DF
+names(df)[names(df) == "grade_tot"] <- "TOT"
+names(df)[names(df) == "grade_pr"] <- "GP"
+names(df)[names(df) == "grade_rd"] <- "GR"
+names(df)[names(df) == "rd_comp"] <- "CR"
+names(df)[names(df) == "pr_comp"] <- "CP"
+
+opar <- par() 
+# Define settings for plotting in a 3x4 grid, with appropriate margins:
+par(mar = rep(1.25,4.5))
+par(mfrow = c(4,5))
+# Produce a radar-chart for each student
+for (i in 4:nrow(df)) {
+  radarchart(
+    df[c(1:3, i), ],
+    pfcol = c(scales::alpha("#ffbc80", 0.5),scales::alpha("#e4cdff", 0.5)),
+    pcol= c(NA, "#bc80ff"), plty = 1, plwd = 2, cglty=1, cglcol=c("gray85"),
+    title = row.names(df)[i]
+  )
+}
+# Restore the standard par() settings
+par <- par(opar) 
+```
+  
+### Insights  
+  
+**Scatter Plots**  
+Looking at the scatter plot of PFF grades, we can see that run defense has a lot more concentration near the top than does pass rush. This highlights the notion of skill scarcity and shows that elite pass rushing is much harder to find than elite run stopping.  
+  
+**Score Comparisons**  
+The extreme cases within the player comparison visual are the most interesting as they highlight instances where there is a significant difference in player value. Patrick Jones II, Osa Odighizuwa, and Rashad Weaver are three examples of players who are ranked much more favorable by PFF metrics versus the comparative scores. Comparatively, Gregory Rousseau, Joseph Ossai, and Hamlicar Rashed Jr. are all ranked much more favorably by the comparative scores versus the PFF metrics.  
+  
+**Player Radar Charts**  
+The radar charts highlight the diversity of each player. Players with large purple polygons (such as Chris Rumph II, Quncy Roche, and Jordan Smith) are consistently near the top of each metric, whereas players with small areas are near the bottom. Interesting cases arise where players have one peak, such as Osa Odighizuwa, Cameron Sample, and Hamlicar Rashed Jr. These players all have a specific area that they excel at but are near the middle of the pack in every other category.  
+  
+### Future Iterations  
+This analysis is a quick glance at a very specific subset of players. It is by no means exhaustive and will benefit from more and better data. Additionally, future research will allow for more accurately weighted models which will enhance the predictive value of the comparative scores.  
+  
+***
