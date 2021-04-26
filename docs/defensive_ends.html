@@ -25,6 +25,18 @@
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
 <link href="site_libs/anchor-sections-1.0/anchor-sections.css" rel="stylesheet" />
 <script src="site_libs/anchor-sections-1.0/anchor-sections.js"></script>
+<script src="site_libs/core-js-2.5.3/shim.min.js"></script>
+<script src="site_libs/react-16.12.0/react.min.js"></script>
+<script src="site_libs/react-16.12.0/react-dom.min.js"></script>
+<script src="site_libs/reactwidget-1.0.0/react-tools.js"></script>
+<script src="site_libs/htmlwidgets-1.5.2/htmlwidgets.js"></script>
+<script src="site_libs/reactable-binding-0.2.3/reactable.js"></script>
+<script src="site_libs/plotly-binding-4.9.2.1/plotly.js"></script>
+<script src="site_libs/typedarray-0.1/typedarray.min.js"></script>
+<link href="site_libs/crosstalk-1.1.0.1/css/crosstalk.css" rel="stylesheet" />
+<script src="site_libs/crosstalk-1.1.0.1/js/crosstalk.min.js"></script>
+<link href="site_libs/plotly-htmlwidgets-css-1.52.2/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="site_libs/plotly-main-1.52.2/plotly-latest.min.js"></script>
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -306,24 +318,67 @@ $(document).ready(function () {
 </div>
 
 
-<div id="r-markdown" class="section level2">
-<h2>R Markdown</h2>
-<p>This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <a href="http://rmarkdown.rstudio.com" class="uri">http://rmarkdown.rstudio.com</a>.</p>
-<p>When you click the <strong>Knit</strong> button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:</p>
-<pre class="r"><code>summary(cars)</code></pre>
-<pre><code>##      speed           dist       
-##  Min.   : 4.0   Min.   :  2.00  
-##  1st Qu.:12.0   1st Qu.: 26.00  
-##  Median :15.0   Median : 36.00  
-##  Mean   :15.4   Mean   : 42.98  
-##  3rd Qu.:19.0   3rd Qu.: 56.00  
-##  Max.   :25.0   Max.   :120.00</code></pre>
+<p><img src="images/draft_log2.jpg" /></p>
+<div id="edge-rusher-analysis" class="section level1">
+<h1><strong>Edge Rusher Analysis</strong></h1>
+<hr />
+<div id="introduction-and-variables" class="section level3">
+<h3>Introduction and Variables</h3>
+<p>The following analysis seeks to comparatively analyze the top 20 edge rushers available in the 2021 NFL draft. Both qualitative and quantitative variables were used to measure player value. The table below summarizes these metrics:</p>
+<ul>
+<li><strong>PFF Overall</strong>: Overall PFF Grade</li>
+<li><strong>PFF Pass</strong>: Pass Defense PFF Grade</li>
+<li><strong>PFF Run</strong>: Run Defense PFF Grade</li>
+<li><strong>Stop Rate</strong>: Stops per Snap Played</li>
+<li><strong>Tackle Rate</strong>: Tackles per Snap Played</li>
+<li><strong>Assist Rate</strong>: Assists per Snap Played</li>
+<li><strong>Forced Fumble Rate</strong>: Forced Fumbles per Snap Played</li>
+<li><strong>Hit Rate</strong>: QB Hits per Pass Play</li>
+<li><strong>Hurry Rate</strong>: QB Hurries per Pass Play</li>
+<li><strong>Sack Rate</strong>: Sacks per Pass Play</li>
+</ul>
 </div>
-<div id="including-plots" class="section level2">
-<h2>Including Plots</h2>
-<p>You can also embed plots, for example:</p>
-<p><img src="defensive_ends_files/figure-html/pressure-1.png" width="672" /></p>
-<p>Note that the <code>echo = FALSE</code> parameter was added to the code chunk to prevent printing of the R code that generated the plot.</p>
+<div id="method" class="section level3">
+<h3>Method</h3>
+<p>PFF grades range from 60-100 and are presented largely unchanged throughout this analysis. The rate metrics were combined and blended to create two new metrics: Composite Pass and Composite Run. These two scores range from 0-100 and measure the overall production of each player relative to the entire player pool. Below are the components of each score:</p>
+<ul>
+<li><strong>Composite Pass</strong>: Hit Rate, Hurry Rate, and Sack Rate</li>
+<li><strong>Composite Run</strong>: Stop Rate, Tackle Rate, Assist Rate, and Forced Fumble Rate</li>
+</ul>
+<hr />
+</div>
+<div id="results" class="section level3">
+<h3>Results</h3>
+<p><strong>Player Values by Category</strong><br />
+The table below includes the PFF grades and composite score for the entirety of the player pool. The table can be sorted by column simply by clicking on the column title, and the search bar can be used to find specific players.</p>
+<p><div id="htmlwidget-9bf18ee0d6d730a67d93" class="reactable html-widget" style="width:auto;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-9bf18ee0d6d730a67d93">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"player":["Quincy Roche","Rashad Weaver","Shaka Toney","Ronnie Perkins","Carlos Basham Jr.","Kwity Paye","Azeez Ojulari","Osa Odighizuwa","Jayson Oweh","Jordan Smith","Cameron Sample","Gregory Rousseau","Chris Rumph II","Patrick Jones II","Jaelan Phillips","Adetokunbo Ogundeji","Victor Dimukeje","Joseph Ossai","Joe Tryon","Hamilcar Rashed Jr."],"games":[49,35,47,33,45,38,27,43,24,44,46,14,36,50,22,43,49,26,25,34],"grade_tot":[82.75,79.37,77.9,77.27,76.93,76.3,76.03,76.03,75.9,75.78,74.92,74.75,74.7,74.65,74.13,71.83,71.8,69.77,66.65,62.3],"grade_pr":[84.1,75.67,81.35,73.43,73.45,72,72.5,71.2,76.83,71.8,66,68.75,76.93,70.58,77.7,69.15,72.8,71.27,68.75,63.67],"grade_rd":[75.05,79.4,70.67,78.6,73.78,77.18,71.13,79.05,70.4,71.08,77.53,71.6,74,78.45,71.13,72.62,68.6,67.93,64.9,66.5],"pr_comp":[58.18,43.37,48.5,33.5,44.07,36.85,67.14,18.09,47.91,76.44,9.3,81.05,100,31.6,63.89,31.82,40.24,44.97,46.82,19.55],"rd_comp":[35.28,14.26,20.06,19.08,32.39,24.58,40.86,13.5,34.34,54.6,30.33,65.45,65.66,4.52,59.87,18.9,9.09,100,35.58,79.32]},"columns":[{"accessor":"player","name":"Player Name","type":"character"},{"accessor":"games","name":"Games","type":"numeric"},{"accessor":"grade_tot","name":"PFF Overall","type":"numeric"},{"accessor":"grade_pr","name":"PFF Pass","type":"numeric"},{"accessor":"grade_rd","name":"PFF Run","type":"numeric"},{"accessor":"pr_comp","name":"Composite Pass","type":"numeric","style":[{"background":"#AFFFD4"},{"background":"#BFFFDD"},{"background":"#B9FFDA"},{"background":"#CAFFE3"},{"background":"#BEFFDD"},{"background":"#C7FFE1"},{"background":"#A4FFCF"},{"background":"#DCFFEC"},{"background":"#BAFFDB"},{"background":"#9AFFCA"},{"background":"#E6FFF2"},{"background":"#95FFC7"},{"background":"#80FFBC"},{"background":"#CCFFE4"},{"background":"#A8FFD1"},{"background":"#CCFFE4"},{"background":"#C3FFDF"},{"background":"#BDFFDC"},{"background":"#BBFFDB"},{"background":"#DAFFEB"}]},{"accessor":"rd_comp","name":"Composite Run","type":"numeric","style":[{"background":"#C5FFE0"},{"background":"#DBFFEC"},{"background":"#D5FFE9"},{"background":"#D6FFE9"},{"background":"#C8FFE2"},{"background":"#D0FFE6"},{"background":"#BFFFDD"},{"background":"#DCFFEC"},{"background":"#C6FFE1"},{"background":"#B0FFD5"},{"background":"#CAFFE3"},{"background":"#A4FFCF"},{"background":"#A4FFCF"},{"background":"#E6FFF2"},{"background":"#AAFFD2"},{"background":"#D6FFE9"},{"background":"#E1FFEF"},{"background":"#80FFBC"},{"background":"#C4FFE0"},{"background":"#96FFC7"}]}],"searchable":true,"defaultPageSize":10,"paginationType":"numbers","showPageInfo":true,"minRows":1,"highlight":true,"striped":true,"nowrap":true,"style":{"fontFamily":"Work Sans, sans-serif","fontSize":"14px"},"dataKey":"9d2f17c255ae7b9e983e06ad6b52fa4c","key":"9d2f17c255ae7b9e983e06ad6b52fa4c"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script> <br /> <br /> <strong>Players by Pass Defense and Run Defense Scores</strong><br />
+<strong>PFF and Composite Values</strong><br />
+The scatterplots below show the relative ranks of each player based on both PFF grades (purple) and composite scores (orange). Pass rush ability moves along the y-axis, while run defense moves along the x-axis. As we move up and to the right within each plot, we find players who are better at each skill.</p>
+<p><div id="htmlwidget-5b4fd806db78344a3d30" style="width:672px;height:480px;" class="plotly html-widget"></div>
+<script type="application/json" data-for="htmlwidget-5b4fd806db78344a3d30">{"x":{"data":[{"x":[84.1,75.67,81.35,73.43,73.45,72,72.5,71.2,76.83,71.8,66,68.75,76.93,70.58,77.7,69.15,72.8,71.27,68.75,63.67],"y":[75.05,79.4,70.67,78.6,73.78,77.18,71.13,79.05,70.4,71.08,77.53,71.6,74,78.45,71.13,72.62,68.6,67.93,64.9,66.5],"text":["player: Quincy Roche","player: Rashad Weaver","player: Shaka Toney","player: Ronnie Perkins","player: Carlos Basham Jr.","player: Kwity Paye","player: Azeez Ojulari","player: Osa Odighizuwa","player: Jayson Oweh","player: Jordan Smith","player: Cameron Sample","player: Gregory Rousseau","player: Chris Rumph II","player: Patrick Jones II","player: Jaelan Phillips","player: Adetokunbo Ogundeji","player: Victor Dimukeje","player: Joseph Ossai","player: Joe Tryon","player: Hamilcar Rashed Jr."],"type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(188,128,255,1)","opacity":1,"size":5.66929133858268,"symbol":"circle","line":{"width":1.88976377952756,"color":"rgba(188,128,255,1)"}},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[58.18,43.37,48.5,33.5,44.07,36.85,67.14,18.09,47.91,76.44,9.3,81.05,100,31.6,63.89,31.82,40.24,44.97,46.82,19.55],"y":[35.28,14.26,20.06,19.08,32.39,24.58,40.86,13.5,34.34,54.6,30.33,65.45,65.66,4.52,59.87,18.9,9.09,100,35.58,79.32],"text":["player: Quincy Roche","player: Rashad Weaver","player: Shaka Toney","player: Ronnie Perkins","player: Carlos Basham Jr.","player: Kwity Paye","player: Azeez Ojulari","player: Osa Odighizuwa","player: Jayson Oweh","player: Jordan Smith","player: Cameron Sample","player: Gregory Rousseau","player: Chris Rumph II","player: Patrick Jones II","player: Jaelan Phillips","player: Adetokunbo Ogundeji","player: Victor Dimukeje","player: Joseph Ossai","player: Joe Tryon","player: Hamilcar Rashed Jr."],"type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(255,188,128,1)","opacity":1,"size":5.66929133858268,"symbol":"circle","line":{"width":1.88976377952756,"color":"rgba(255,188,128,1)"}},"hoveron":"points","showlegend":false,"xaxis":"x2","yaxis":"y2","hoverinfo":"text","frame":null}],"layout":{"xaxis":{"domain":[0,0.46],"automargin":true,"type":"linear","autorange":false,"range":[62.6485,85.1215],"tickmode":"array","ticktext":["65","70","75","80","85"],"tickvals":[65,70,75,80,85],"categoryorder":"array","categoryarray":["65","70","75","80","85"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.65296803652968,"tickwidth":0.66417600664176,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.689497716895},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(255,255,255,1)","gridwidth":0.66417600664176,"zeroline":false,"anchor":"y","title":{"text":"PFF Pass Grade","font":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187}},"hoverformat":".2f"},"xaxis2":{"domain":[0.54,1],"automargin":true,"type":"linear","autorange":false,"range":[4.765,104.535],"tickmode":"array","ticktext":["25","50","75","100"],"tickvals":[25,50,75,100],"categoryorder":"array","categoryarray":["25","50","75","100"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.65296803652968,"tickwidth":0.66417600664176,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.689497716895},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(255,255,255,1)","gridwidth":0.66417600664176,"zeroline":false,"anchor":"y2","title":{"text":"Comp Pass Grade","font":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187}},"hoverformat":".2f"},"yaxis2":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[-0.254,104.774],"tickmode":"array","ticktext":["0","25","50","75","100"],"tickvals":[0,25,50,75,100],"categoryorder":"array","categoryarray":["0","25","50","75","100"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.65296803652968,"tickwidth":0.66417600664176,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.689497716895},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(255,255,255,1)","gridwidth":0.66417600664176,"zeroline":false,"anchor":"x2","title":{"text":"Comp Run Grade","font":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[64.175,80.125],"tickmode":"array","ticktext":["65","70","75","80"],"tickvals":[65,70,75,80],"categoryorder":"array","categoryarray":["65","70","75","80"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.65296803652968,"tickwidth":0.66417600664176,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.689497716895},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(255,255,255,1)","gridwidth":0.66417600664176,"zeroline":false,"anchor":"x","title":{"text":"PFF Run Grade","font":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187}},"hoverformat":".2f"},"annotations":[],"shapes":[{"type":"rect","fillcolor":null,"line":{"color":null,"width":0,"linetype":[]},"yref":"paper","xref":"paper","x0":0,"x1":0.46,"y0":0,"y1":1},{"type":"rect","fillcolor":null,"line":{"color":null,"width":0,"linetype":[]},"yref":"paper","xref":"paper","x0":0.54,"x1":1,"y0":0,"y1":1}],"images":[],"margin":{"t":26.2283105022831,"r":7.30593607305936,"b":40.1826484018265,"l":43.1050228310502},"plot_bgcolor":"rgba(235,235,235,1)","paper_bgcolor":"rgba(255,255,255,1)","font":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187},"showlegend":false,"legend":{"bgcolor":"rgba(255,255,255,1)","bordercolor":"transparent","borderwidth":1.88976377952756,"font":{"color":"rgba(0,0,0,1)","family":"","size":11.689497716895}},"hovermode":"closest","barmode":"relative","autosize":false,"width":800,"height":500},"attrs":{"22882c323c21":{"x":{},"y":{},"Player":{},"type":"scatter"},"228834704992":{"x":{},"y":{},"Player":{},"type":"scatter"}},"source":"A","config":{"doubleClick":"reset","showSendToCloud":false},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"subplot":true,"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script> <br /><br />
+<strong>Player Score Comparisons</strong><br />
+<strong>PFF versus Composite</strong><br />
+Our two categories – PFF Grades and Composite Scores – capture different items. PFF grades are subjective and more wholistic, while composite scores measure pure production agnostic to game situation. As such, a lot can be gained from analyzing how players score within each category. The chart below plots the two scores for each player, with the purple dot corresponding to the PFF Grade and the orange dot corresponding to the Composite Score. Players with large distances between the two points have a considerable difference in how they are valued by the two metrics.</p>
+<p><img src="defensive_ends_files/figure-html/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><strong>Player Radar Charts</strong><br />
+Now we will look to combine our metrics and see how each player compares to the entire pool. Below are radar charts for each player, where the shaded orange area represents the group average, and the purple lines represent the individuals score in five different categories: Total PFF Grade (TOT), Pass Rush PFF Grade (GP), Run Defense PFF Grade (GR), Pass Rush Composite Grade (CP) and Run Defense Composite Grade (CR). The closer to the edge, the better a player is for a given category.<br />
+<br /> <img src="defensive_ends_files/figure-html/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="insights" class="section level3">
+<h3>Insights</h3>
+<p><strong>Scatter Plots</strong><br />
+Looking at the scatter plot of PFF grades, we can see that run defense has a lot more concentration near the top than does pass rush. This highlights the notion of skill scarcity and shows that elite pass rushing is much harder to find than elite run stopping.</p>
+<p><strong>Score Comparisons</strong><br />
+The extreme cases within the player comparison visual are the most interesting as they highlight instances where there is a significant difference in player value. Patrick Jones II, Osa Odighizuwa, and Rashad Weaver are three examples of players who are ranked much more favorable by PFF metrics versus the comparative scores. Comparatively, Gregory Rousseau, Joseph Ossai, and Hamlicar Rashed Jr. are all ranked much more favorably by the comparative scores versus the PFF metrics.</p>
+<p><strong>Player Radar Charts</strong><br />
+The radar charts highlight the diversity of each player. Players with large purple polygons (such as Chris Rumph II, Quncy Roche, and Jordan Smith) are consistently near the top of each metric, whereas players with small areas are near the bottom. Interesting cases arise where players have one peak, such as Osa Odighizuwa, Cameron Sample, and Hamlicar Rashed Jr. These players all have a specific area that they excel at but are near the middle of the pack in every other category.</p>
+</div>
+<div id="future-iterations" class="section level3">
+<h3>Future Iterations</h3>
+<p>This analysis is a quick glance at a very specific subset of players. It is by no means exhaustive and will benefit from more and better data. Additionally, future research will allow for more accurately weighted models which will enhance the predictive value of the comparative scores.</p>
+<hr />
+</div>
 </div>
 
 
