@@ -5,8 +5,8 @@ navbar:
   left:
   - text: "Defensive Ends"
     href: defensive_ends.html
-  - text: "Defensive Ends"
-    href: defensive_ends.html
+  - text: "Wide Receivers"
+    href: wide_receivers.html
 
 output:
   html_document:
