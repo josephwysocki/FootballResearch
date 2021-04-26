@@ -2,7 +2,8 @@
 title: 
 output: html_document
 ---
-
+<br/>
+![](images/draft_log2.jpg)
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```

@@ -1,13 +1,11 @@
 ---
-
+title: ""
 ---
-
-![](images/draft_log2.jpg)  
-  
+ 
 # **Edge Rusher Analysis**
 ***  
 
-### Introduction and Variables  
+### **Introduction and Variables** 
 The following analysis seeks to comparatively analyze the top 20 edge rushers available in the 2021 NFL draft. Both qualitative and quantitative variables were used to measure player value. The table below summarizes these metrics:  
   
 * **PFF Overall**: Overall PFF Grade
@@ -21,14 +19,14 @@ The following analysis seeks to comparatively analyze the top 20 edge rushers av
 * **Hurry Rate**: QB Hurries per Pass Play
 * **Sack Rate**: Sacks per Pass Play
 
-### Method  
+### **Method**  
 PFF grades range from 60-100 and are presented largely unchanged throughout this analysis. The rate metrics were combined and blended to create two new metrics: Composite Pass and Composite Run. These two scores range from 0-100 and measure the overall production of each player relative to the entire player pool. Below are the components of each score:  
   
   * **Composite Pass**: Hit Rate, Hurry Rate, and Sack Rate
   * **Composite Run**: Stop Rate, Tackle Rate, Assist Rate, and Forced Fumble Rate
   
   ***
-### Results  
+### **Results**  
   
 **Player Values by Category**  
 The table below includes the PFF grades and composite score for the entirety of the player pool. The table can be sorted by column simply by clicking on the column title, and the search bar can be used to find specific players.  
@@ -410,7 +408,7 @@ for (i in 4:nrow(df)) {
 par <- par(opar) 
 ```
   
-### Insights  
+### **Insights**  
   
 **Scatter Plots**  
 Looking at the scatter plot of PFF grades, we can see that run defense has a lot more concentration near the top than does pass rush. This highlights the notion of skill scarcity and shows that elite pass rushing is much harder to find than elite run stopping.  
@@ -421,7 +419,7 @@ The extreme cases within the player comparison visual are the most interesting a
 **Player Radar Charts**  
 The radar charts highlight the diversity of each player. Players with large purple polygons (such as Chris Rumph II, Quncy Roche, and Jordan Smith) are consistently near the top of each metric, whereas players with small areas are near the bottom. Interesting cases arise where players have one peak, such as Osa Odighizuwa, Cameron Sample, and Hamlicar Rashed Jr. These players all have a specific area that they excel at but are near the middle of the pack in every other category.  
   
-### Future Iterations  
+### **Future Iterations**  
 This analysis is a quick glance at a very specific subset of players. It is by no means exhaustive and will benefit from more and better data. Additionally, future research will allow for more accurately weighted models which will enhance the predictive value of the comparative scores.  
   
 ***
